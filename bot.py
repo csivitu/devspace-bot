@@ -1,10 +1,9 @@
 import discord, requests, json, random
 from discord.ext import commands
 from vars import *
-from tokens import *
 
 
-client = commands.Bot('~', description="hello")
+client = commands.Bot('~', description="Helper Bot for Devspace 2021")
 env = json.load(open("env.json", "r"))
 
 
@@ -60,7 +59,7 @@ async def faq(context, *args):
 @client.event
 async def on_message(message):
 	if "ooo" == message.content[:3]:
-		await message.channel.send("OO"*random.randint(8,30))
+		await message.channel.send("O"*random.randint(8,30))
 		return
 	await client.process_commands(message)
 
