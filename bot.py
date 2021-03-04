@@ -25,7 +25,6 @@ async def eightball(context, *args):
 	question = ' '.join(args)	
 	answer = requests.get(r"https://8ball.delegator.com/magic/JSON/Heya")
 	data = json.loads(answer.text)
-	print(data)
 	myEmbed = discord.Embed(
 		title = "Q: "+question,
 		description = "A: "+data["magic"]["answer"],
