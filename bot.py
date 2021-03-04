@@ -4,8 +4,8 @@ from vars import *
 
 
 client = commands.Bot('~', description="Helper Bot for Devspace 2021")
+client.remove_command('help')
 env = json.load(open("env.json", "r"))
-
 
 @client.command(name="invite")
 @commands.has_any_role(botMod, "admin")
@@ -27,8 +27,8 @@ async def eightball(context, *args):
 	data = json.loads(answer.text)
 	print(data)
 	myEmbed = discord.Embed(
-		title = question,
-		description = data["magic"]["answer"],
+		title = "Q: "+question,
+		description = "A: "+data["magic"]["answer"],
 		color = devBlue)
 	await context.message.channel.send(embed = myEmbed)
 
@@ -44,7 +44,7 @@ async def on_ready():
 
 
 @client.command(name="faq")
-async def faq(context, *args):
+async def faq(context):
 	myEmbed = discord.Embed(
 		title = "FAQ",
 		description = "", 
@@ -55,6 +55,18 @@ async def faq(context, *args):
 	myEmbed.set_footer(text="End of FAQ section", icon_url=devURL)
 	await context.message.channel.send(embed = myEmbed)
 
+@client.command(name="help")
+async def help_(context):
+	myEmbed = discord.Embed(
+		title = "Help",
+		description = "Summary of all available commands", 
+		color = devBlue)
+	myEmbed.set_thumbnail(url = devURL)
+	myEmbed.add_field(name="~faq", value="Shows Frequently Asked Questions about Devspace", inline=False)
+	myEmbed.add_field(name="~8ball <question>", value="Ask the real questions of life to the magical 8-Ball!", inline=False)
+	myEmbed.add_field(name="~invite", value="Show invite link for this discord server → Admin Command", inline=False)
+	myEmbed.set_footer(text="End of Help Section", icon_url=devURL)
+	await context.message.channel.send(embed = myEmbed)
 
 @client.event
 async def on_message(message):
@@ -62,6 +74,5 @@ async def on_message(message):
 		await message.channel.send("O"*random.randint(8,30))
 		return
 	await client.process_commands(message)
-
 
 client.run(env["token"])
