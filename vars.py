@@ -1,5 +1,5 @@
 devURL = "https://scontent.fdel3-2.fna.fbcdn.net/v/t1.0-9/26731442_2034629300149002_671906561463196005_n.png?_nc_cat=108&ccb=3&_nc_sid=09cbfe&_nc_ohc=i9andkTCi5AAX-cTYIl&_nc_oc=AQkQQEq0-QXND1_PpEJS3iC3aEDNPrMrAp2rximboP1iWlbVNuMis2fW0yMY3ir5GtQI54opq5a-NuOoCyvSD_au&_nc_ht=scontent.fdel3-2.fna&oh=a859d6d300c0ed145de286bbf9242a48&oe=60671B2D"
-devBanner = "https://imgur.com/YA7FBfT"
+devBanner = "https://i.imgur.com/YA7FBfT.png"
 
 devBlue = 0x0094FF
 botMod = 'devspace-bot'
