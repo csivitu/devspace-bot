@@ -1,7 +1,6 @@
 import pymongo
 import json
 
-print(json.loads(open("env.json", "r").read())["mongo"])
 client = pymongo.MongoClient(json.loads(open("env.json", "r").read())["mongo"])
 db = client.spacey
 collection = db.users
@@ -13,14 +12,17 @@ def checkUser(email):
     else:
         return False
 
+
 #adds user to DB
 def addUser(email, ref):
-    user = {
-        "email": email,
-        "ref": ref,
-        "hits": 0
-    }
-    collection.insert_one(user)
+    if(not checkUser(email)):
+        user = {
+            "email": email,
+            "ref": ref,
+            "hits": 0
+        }
+        collection.insert_one(user)
+
 
 #check refferals
 def checkRef(ref):
