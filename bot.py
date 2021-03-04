@@ -68,6 +68,13 @@ async def help_(context):
 	await context.message.channel.send(embed = myEmbed)
 
 @client.event
+async def on_raw_reaction_add(payload):
+	print(1)
+	channel = client.get_channel(payload.channel_id)
+	print(payload.user_id)
+	await channel.send("hi")
+
+@client.event
 async def on_message(message):
 	if "ooo" == message.content[:3]:
 		await message.channel.send("O"*random.randint(8,30))

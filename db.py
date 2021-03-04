@@ -5,24 +5,23 @@ client = pymongo.MongoClient(json.loads(open("env.json", "r").read())["mongo"])
 db = client.spacey
 collection = db.users
 
-#checks if passed email exists in DB
-def checkUser(email):
-    if(collection.find_one({"email": email})):
+#checks if passed id exists in DB
+def checkUser(id):
+    if(collection.find_one({"user_id": id})):
         return True
     else:
         return False
 
-
 #adds user to DB
-def addUser(email, ref):
-    if(not checkUser(email)):
+def addUser(email, ref, id):
+    if(not checkUser(id)):
         user = {
             "email": email,
             "ref": ref,
+            "user_id": id,
             "hits": 0
         }
         collection.insert_one(user)
-
 
 #check refferals
 def checkRef(ref):
