@@ -41,7 +41,6 @@ async def on_ready():
 		env["invite"] = invite.url
 		json.dump(env, open("env.json", "w"), indent=4)
 
-
 @client.command(name="faq")
 async def faq(context):
 	myEmbed = discord.Embed(
@@ -67,11 +66,34 @@ async def help_(context):
 	myEmbed.set_footer(text="End of Help Section", icon_url=devURL)
 	await context.message.channel.send(embed = myEmbed)
 
+@client.command()
+async def reaction_check(context, *, text):
+	print(1)
+	await context.message.channel.send("Hi")
+
 @client.event
 async def on_message(message):
 	if "ooo" == message.content[:3]:
 		await message.channel.send("O"*random.randint(8,30))
 		return
 	await client.process_commands(message)
+
+
+reaction_message_id = '817105609514156063'
+reaction_emoji = '👍'
+
+@client.event
+async def on_raw_reaction_add(payload):
+	print("1")
+	main_user = payload.user_id
+	message_id = payload.message_id
+	if str(message_id) == reaction_message_id and payload.emoji == reaction_emoji:
+		await message.main_user.send("Do you have a referral code?")
+'''
+		@client.event
+		async def on_message(message):
+			message_text = message.text
+			if user == main_user and message_text.lower() == "yes":
+				await message.user.send("Please provide the referral code")'''
 
 client.run(env["token"])
