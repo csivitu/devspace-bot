@@ -1,7 +1,7 @@
-import discord, requests, json, random
+import discord, requests, json, random, string
 from discord.ext import commands
 from vars import *
-#import db.py
+import db
 
 
 intents = discord.Intents.default()
@@ -43,6 +43,7 @@ async def on_ready():
 		print(invite.url)
 		env["invite"] = invite.url
 		json.dump(env, open("env.json", "w"), indent=4)
+	print("Bot is ready for use")
 
 @client.command(name="faq")
 async def faq(context):
@@ -71,20 +72,19 @@ async def help_(context):
 
 @client.event
 async def on_message(message):
-	print(message.content, type(message.channel.type), message.author.id)
-	if str(message.channel.type) == 'private':
-		print("Hi")
-		await message.channel.send("Hi")
+	if "ooo" == message.content[:3]:
+		await message.channel.send("O"*random.randint(8,30))
+		return
+	await client.process_commands(message)
+
+def referral_generator():
+	ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15))
+	if db.checkRefRandom(ref):
+		referral_generator()
 	else:
-		if "ooo" == message.content[:3]:
-			await message.channel.send("O"*random.randint(8,30))
-			return
-		await client.process_commands(message)
+		return ref
 
-def checkReferral(payload):
-	return client.get_user(int(payload.user_id)).send("Do you have a referral code?")
-
-reaction_message_id = '817105609514156063'
+reaction_message_id = '817278322559680543'
 reaction_emoji = '👍'
 
 @client.event
@@ -93,11 +93,63 @@ async def on_raw_reaction_add(payload):
 	main_user = payload.user_id
 	message_id = payload.message_id
 	print(main_user, message_id, payload.emoji)
-	#print(str(message_id) == reaction_message_id, str(payload.emoji) == reaction_emoji)
+	#checks if the user is present in the database
+	if(db.checkUser(main_user)):
+		print("User already present")
+		return
+	#check if the message id and reaction emoji match
 	if str(message_id) == reaction_message_id and str(payload.emoji) == reaction_emoji:
 		print(2)
-		await checkReferral(payload)
-		#client.get_user(int(main_user)).send("Do you have a referral code?")
+		while True:
+			#Send DM asking if the user has a referral code or not
+			await client.get_user(int(payload.user_id)).send("Do you have a referral code? (yes/no)")
+			#Accept the response from the user
+			response = await client.wait_for('message') #TODO: add check as the second parameter
+			print(response.content)
+			#Checks if the response's content is yes or no
+			if response.content.lower() == 'yes':
+				#Takes the referral code until the correct referral is given or 'no' is entered
+				await client.get_user(int(payload.user_id)).send("Please provide your referral code")
+				while True:
+					ref = await client.wait_for('message')
+					print(ref.content)
+					if ref.content.lower() == 'no':
+						break
+					if db.checkRef(str(ref.content)):
+						break
+					else:
+						await client.get_user(int(payload.user_id)).send("Incorrect referral code!")
+						await client.get_user(int(payload.user_id)).send("Please provide correct Referral code or reply with 'no' to quit!")
+				break
+			elif response.content.lower() == 'no':
+				await client.get_user(int(payload.user_id)).send("Okay")
+				break
+			else:
+				await client.get_user(int(payload.user_id)).send("Incorrect message syntax")
+		while True:
+			#Ask for referral competition
+			await client.get_user(int(payload.user_id)).send("Do you want to take part in referral competition?")
+			response = await client.wait_for('message')
+			if response.content.lower() == 'yes':
+				#Takes email address
+				await client.get_user(int(payload.user_id)).send("Please provide your email address")
+				email = await client.wait_for('message')
+				print(email.content)
+				#Generates referral code
+				referral = referral_generator()
+				#Send the referral code
+				await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
+				await client.get_user(int(payload.user_id)).send("Thank you for your time")
+				#Adds the user email address, referral code and user id to database
+				db.addUser(email.content, referral, main_user)
+				break
+			elif response.content.lower() == 'no':
+				await client.get_user(int(payload.user_id)).send("Thank you for your time")
+				break
+			else:
+				await client.get_user(int(payload.user_id)).send("Incorrect message syntax")
+
+#TO-DO: Prevent multiple reacts
 
 
 client.run(env["token"])

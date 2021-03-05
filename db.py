@@ -23,12 +23,21 @@ def addUser(email, ref, id):
         }
         collection.insert_one(user)
 
-#check refferals
+#check referrals
 def checkRef(ref):
-    result = dict(collection.find_one({"ref":ref}))
-    hits = result["hits"]
+    result = collection.find_one({"ref":ref})
     if(result):
+        result = dict(result)
+        hits = result["hits"]
         collection.update(result, { "$set": {"hits":hits+1}})
+        return True
+    else:
+        return False
+
+#Check referral for the referral_generator()
+def checkRefRandom(ref):
+    result = collection.find_one({"ref":ref})
+    if result:
         return True
     else:
         return False
