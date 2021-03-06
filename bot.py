@@ -1,6 +1,7 @@
 import discord, requests, json, random, string, time
 from discord.ext import commands
 from vars import *
+from validate_email import validate_email
 import db
 
 
@@ -92,7 +93,9 @@ async def ask_referral(payload):
 			ref = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)))
 			if ref.content.lower() == 'no':
 				break
-			if db.checkRef(str(ref.content)):
+			refCheck = db.checkRef(str(ref.content))
+			if refCheck[0]:
+				await client.get_user(int(refCheck[1])).send("Someone joined using your refferal code \nNoice!!")
 				break
 			else:
 				await client.get_user(int(payload.user_id)).send("Incorrect referral code!")
@@ -113,15 +116,22 @@ async def on_raw_reaction_add(payload):
 	if(db.checkUser(payload.user_id)):
 		print("User already present")
 		return
+	db.addUser("temp", "temp", payload.user_id)
 	if str(message_id) == reaction_message_id and str(payload.emoji) == reaction_emoji:
-		await client.get_user(int(payload.user_id)).send("Please provide your registered email address")
+		await client.get_user(int(payload.user_id)).send("Please provide your email address registered with hackerearth")
 		email = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)))
-		await ask_referral(payload)
+		if validate_email(email.content):
+			await ask_referral(payload)
+			referral = referral_generator()
+			await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
+			await client.get_user(int(payload.user_id)).send("Thank you for your time")
+			db.removeUser(payload.user_id)
+			db.addUser(email.content, referral, payload.user_id)
+		else:
+			await client.get_user(int(payload.user_id)).send("Please enter a valid email")
+			db.removeUser(payload.user_id)
+			await on_raw_reaction_add(payload)
 		
-		referral = referral_generator()
-		await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
-		await client.get_user(int(payload.user_id)).send("Thank you for your time")
-		db.addUser(email.content, referral, payload.user_id)
 
 
 
