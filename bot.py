@@ -86,11 +86,11 @@ def referral_generator():
 
 async def ask_referral(payload):
 	await client.get_user(int(payload.user_id)).send("Do you have a referral code? (yes/no)")
-	response = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id))) 
+	response = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)) and str(message.channel.type) == 'private') 
 	if response.content.lower() == 'yes':
 		await client.get_user(int(payload.user_id)).send("Please provide your referral code")
 		while True:
-			ref = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)))
+			ref = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)) and str(message.channel.type) == 'private')
 			if ref.content.lower() == 'no':
 				break
 			refCheck = db.checkRef(str(ref.content))
@@ -119,7 +119,7 @@ async def on_raw_reaction_add(payload):
 	db.addUser("temp", "temp", payload.user_id)
 	if str(message_id) == reaction_message_id and str(payload.emoji) == reaction_emoji:
 		await client.get_user(int(payload.user_id)).send("Please provide your email address registered with hackerearth")
-		email = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)))
+		email = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)) and str(message.channel.type) == 'private')
 		if validate_email(email.content):
 			await ask_referral(payload)
 			referral = referral_generator()
