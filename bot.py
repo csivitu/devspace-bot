@@ -127,7 +127,7 @@ reaction_message_ids = [
     # Shivansh rules
     '813385193406201896'
 ]
-reaction_emoji = '👍'
+reaction_emojis = ['👍', '✅']
 
 
 @client.event
@@ -139,7 +139,7 @@ async def on_raw_reaction_add(payload):
         return
     db.addUser("temp", "temp", payload.user_id)
     print(payload.emoji)
-    if (str(message_id) in reaction_message_ids) and str(payload.emoji) == reaction_emoji:
+    if (str(message_id) in reaction_message_ids) and (str(payload.emoji) in reaction_emojis):
         msgintro = "Hi I'm Spacey The official Devspace bot :)"
 
         await client.get_user(int(payload.user_id)).send(msgintro + "\nPlease provide your email address registered with hackerearth")
