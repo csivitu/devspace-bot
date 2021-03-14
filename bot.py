@@ -104,9 +104,14 @@ async def ask_referral(payload):
 		await client.get_user(int(payload.user_id)).send("Okay")
 	else:
 		await client.get_user(int(payload.user_id)).send("Incorrect message syntax")
-		await ask_referral(payload)
+                await ask_referral(payload)
 
-reaction_message_id = '817449124093755462'
+reaction_message_ids = [
+				# Referral channel
+				'820601793989705758',
+				# Shivansh rules 
+				'813385193406201896'
+				]
 reaction_emoji = '👍'
 
 @client.event
@@ -117,21 +122,27 @@ async def on_raw_reaction_add(payload):
 		print("User already present")
 		return
 	db.addUser("temp", "temp", payload.user_id)
-	if str(message_id) == reaction_message_id and str(payload.emoji) == reaction_emoji:
-		await client.get_user(int(payload.user_id)).send("Please provide your email address registered with hackerearth")
-		email = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)) and str(message.channel.type) == 'private')
-		if validate_email(email.content):
-			await ask_referral(payload)
-			referral = referral_generator()
-			await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
-			await client.get_user(int(payload.user_id)).send("Thank you for your time")
-			db.removeUser(payload.user_id)
-			db.addUser(email.content, referral, payload.user_id)
-		else:
-			await client.get_user(int(payload.user_id)).send("Please enter a valid email")
-			db.removeUser(payload.user_id)
-			await on_raw_reaction_add(payload)
-		
+	if (str(message_id) in reaction_message_ids) and str(payload.emoji) == reaction_emoji:
+								msgintro = "Hi I'm Spacey The official Devspace bot :)"
+
+								await client.get_user(int(payload.user_id)).send(msgintro + "\nPlease provide your email address registered with hackerearth")
+								email = await client.wait_for('message', check = lambda message: message.author == client.get_user(int(payload.user_id)) and str(message.channel.type) == 'private')
+								if validate_email(email.content):
+                                                                            await ask_referral(payload)
+                                                                            referral = referral_generator()
+                                                                            await client.get_user(int(payload.user_id)).send("Your referral code is " + referral) 
+                                                                            await client.get_user(int(payload.user_id)).send("""
+                                                                                                                    Register for Devspace with your friends to create a ton of memories over the weekend. Share the unique code generated above by me and stand to win exciting prizes!
+
+                                                                                                                    - You can share your token with your friends and ask them to register with it.
+                                                                                                                    - As more people register with your token, the higher are your chances for winning a special prize!""")
+                                                                            db.removeUser(payload.user_id)
+                                                                            db.addUser(email.content, referral, payload.user_id)
+                                                                    else:
+                                                                            await client.get_user(int(payload.user_id)).send("Please enter a valid email")
+                                                                            db.removeUser(payload.user_id)
+                                                                            await on_raw_reaction_add(payload)
+                    
 
 
 
