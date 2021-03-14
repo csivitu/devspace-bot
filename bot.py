@@ -19,7 +19,6 @@ env = json.load(open("env.json", "r"))
 
 
 @client.command(name="invite")
-@commands.has_any_role(botMod, "admin")
 async def showInvite(context):
     await context.message.channel.send(env["invite"])
 
@@ -46,7 +45,7 @@ async def eightball(context, *args):
 @client.event
 async def on_ready():
     if not env.get("invite", False):
-        discord_guild = client.get_channel(816343424574685184).guild
+        discord_guild = client.get_channel(813379544848400384).guild
         invite = await discord_guild.text_channels[0].create_invite(max_age=0, max_uses=0)
         print(invite.url)
         env["invite"] = invite.url
