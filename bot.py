@@ -138,7 +138,7 @@ async def on_raw_reaction_add(payload):
         print("User already present")
         return
     db.addUser("temp", "temp", payload.user_id)
-	print(payload.emoji)
+    print(payload.emoji)
     if (str(message_id) in reaction_message_ids) and str(payload.emoji) == reaction_emoji:
         msgintro = "Hi I'm Spacey The official Devspace bot :)"
 
