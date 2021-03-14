@@ -110,7 +110,7 @@ async def ask_referral(payload):
                 break
             refCheck = db.checkRef(str(ref.content))
             if refCheck[0]:
-                await client.get_user(int(refCheck[1])).send("Someone joined using your refferal code \nNoice!!")
+                await client.get_user(int(refCheck[1])).send("Someone joined using your referral code \nNoice!!")
                 break
             else:
                 await client.get_user(int(payload.user_id)).send("Incorrect referral code!")
@@ -148,10 +148,10 @@ async def on_raw_reaction_add(payload):
             referral = referral_generator()
             await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
             await client.get_user(int(payload.user_id)).send("""
-													Register for Devspace with your friends to create a ton of memories over the weekend. Share the unique code generated above by me and stand to win exciting prizes!
+			Register for Devspace with your friends to create a ton of memories over the weekend. Share the unique code generated above by me and stand to win exciting prizes!
 
-													- You can share your token with your friends and ask them to register with it.
-													- As more people register with your token, the higher are your chances for winning a special prize!""")
+			- You can share your token with your friends and ask them to register with it.
+			- As more people register with your token, the higher are your chances for winning a special prize!""")
             db.removeUser(
                 payload.user_id)
             db.addUser(
