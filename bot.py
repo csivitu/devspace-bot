@@ -51,6 +51,7 @@ async def on_ready():
         print(invite.url)
         env["invite"] = invite.url
         json.dump(env, open("env.json", "w"), indent=4)
+    db.rmvTemp("temp")
 
 
 @client.command(name="faq")
@@ -147,7 +148,7 @@ async def on_raw_reaction_add(payload):
         if validate_email(email.content):
             await ask_referral(payload)
             referral = referral_generator()
-            await client.get_user(int(payload.user_id)).send("Your referral code is " + referral)
+            await client.get_user(int(payload.user_id)).send("Your referral code is **"+referral+"**")
             await client.get_user(int(payload.user_id)).send("""
 Register for Devspace with your friends to create a ton of memories over the weekend. Share the unique code generated above by me and stand to win exciting prizes!
 - You can share your token with your friends and ask them to register with it.

@@ -45,3 +45,7 @@ def checkRefRandom(ref):
 #remove user
 def removeUser(id):
     collection.delete_one({"user_id": id})
+
+#clearing temp
+def rmvTemp(email):
+    collection.delete_many({"email":email})
