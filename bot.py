@@ -139,11 +139,21 @@ reaction_message_ids = [
 ]
 reaction_emojis = ['👍', '✅']
 
+lfg_message_ids = [821293558224519200]
+lfg_emojis = ['👍', '✅']
+role_id = 821034296579457044
 
 @client.event
 async def on_raw_reaction_add(payload):
     main_user = payload.user_id
     message_id = payload.message_id
+    
+    if(message_id in lfg_message_ids and str(payload.emoji) in lfg_emojis):
+        roles = [role.id for role in payload.member.roles]
+        if role_id not in roles:
+            role = client.get_guild(payload.guild_id).get_role(role_id)
+            await payload.member.add_roles(role)
+    
     if(db.checkUser(payload.user_id)):
         print("User already present")
         return
@@ -171,5 +181,15 @@ Register for Devspace with your friends to create a ton of memories over the wee
             db.removeUser(payload.user_id)
             await on_raw_reaction_add(payload)
 
+@client.event
+async def on_raw_reaction_remove(payload):
+    user = payload.user_id
+    message_id = payload.message_id
+    if(message_id in lfg_message_ids and str(payload.emoji) in lfg_emojis):
+        member = client.get_guild(payload.guild_id).get_member(payload.user_id)
+        roles = [role.id for role in member.roles]
+        if role_id in roles:
+            role = client.get_guild(payload.guild_id).get_role(role_id)
+            await member.remove_roles(role)
 
 client.run(env["token"])
