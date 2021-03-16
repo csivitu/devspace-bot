@@ -129,9 +129,9 @@ reaction_message_ids = [
 ]
 reaction_emojis = ['👍', '✅']
 
-lfg_message_ids = [821115464322121768, 821144550260998154]
+lfg_message_ids = [821293558224519200]
 lfg_emojis = ['👍', '✅']
-role_id = 821099085671039028
+role_id = 821034296579457044
 
 @client.event
 async def on_raw_reaction_add(payload):
