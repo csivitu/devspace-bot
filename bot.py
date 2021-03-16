@@ -142,7 +142,7 @@ reaction_message_ids = [
 ]
 reaction_emojis = ['👍', '✅']
 
-lfg_message_ids = [821293558224519200]
+lfg_message_ids = [821467566983741511]
 lfg_emojis = ['👍', '✅']
 role_id = 821034296579457044
 
