@@ -4,6 +4,7 @@ import json
 import random
 import string
 import time
+import re
 from discord.ext import commands
 from vars import *
 from validate_email import validate_email
@@ -29,21 +30,23 @@ async def coinflip(context):
 
 @client.command(name="8ball")
 async def eightball(context, *args):
+    # print(args)
+    # qlist = list(args)
+    # regexp = re.compile(r'^\<\@\![0-9]+>$')
+    # for i in range(len(qlist)):
+    #     if regexp.search(qlist[i]):
+    #         print(qlist[i][3:-1])
+    #         qlist[i] = client.get_user(qlist[i][3:-1]).display_name
+    # print(qlist)
     if not(args):
-        myEmbed = discord.Embed(
-            title="Idiot",
-            description="Send the question",
-            color=devBlue)
-        await context.message.channel.send(embed=myEmbed)
+        qna = "Idiot {}\nSend the question".format(context.message.author.mention)
+        await context.message.channel.send(qna)
         return
     question = ' '.join(args)
     answer = requests.get(r"https://8ball.delegator.com/magic/JSON/Heya")
     data = json.loads(answer.text)
-    myEmbed = discord.Embed(
-        title="Q: "+question,
-        description="A: "+data["magic"]["answer"],
-        color=devBlue)
-    await context.message.channel.send(embed=myEmbed)
+    qna = "Q: {}\nA: {}".format(question, data["magic"]["answer"])
+    await context.message.channel.send(qna)
 
 
 @client.event
