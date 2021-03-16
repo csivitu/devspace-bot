@@ -23,6 +23,10 @@ async def showInvite(context):
     await context.message.channel.send(env["invite"])
 
 
+@client.command(name="cf")
+async def coinflip(context):
+    await context.message.channel.send(random.choice(["Yes","No"]))
+
 @client.command(name="8ball")
 async def eightball(context, *args):
     if not(args):
@@ -75,10 +79,16 @@ async def help_(context):
     myEmbed.set_thumbnail(url=devURL)
     myEmbed.add_field(
         name="~faq", value="Shows Frequently Asked Questions about Devspace", inline=False)
+    
     myEmbed.add_field(name="~8ball <question>",
                       value="Ask the real questions of life to the magical 8-Ball!", inline=False)
+
+    myEmbed.add_field(name="~cf <question>",
+                      value="Flip a coin!", inline=False)
+    
     myEmbed.add_field(
-        name="~invite", value="Show invite link for this discord server → Admin Command", inline=False)
+        name="~invite", value="Show invite link for this discord server", inline=False)
+    
     myEmbed.set_footer(text="End of Help Section", icon_url=devURL)
     await context.message.channel.send(embed=myEmbed)
 
